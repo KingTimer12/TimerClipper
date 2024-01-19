@@ -4,6 +4,7 @@ import { CloseIcon } from '../../icons/CloseIcon';
 import { FileIcon } from '../../icons/FileIcon';
 import { UploadIcon } from '../../icons/UploadIcon';
 import { Flex, Text } from '@radix-ui/themes';
+import axios from 'axios';
 
 interface InputProps {
     dropzone: DropzoneState;
@@ -23,13 +24,23 @@ export default function FileInput() {
 
     const onDrop = useCallback((files: File[]) => {
         setFile(files[0]);
+        axios({
+            method: "PUT",
+            url: "",
+            headers: {
+                "Content-Type": "video/mp4"
+            },
+            data: files[0]
+        })
     }, []);
 
     const dropzone = useDropzone({
         onDrop,
         accept: {
-            'video/mp4': ['.mp4'],
+            'video/*': ['.mp4'],
         },
+        maxFiles: 1,
+        preventDropOnDocument: true,
     });
 
     if (file) return <HasFile file={file} removeFile={removeFile} />;
@@ -42,7 +53,7 @@ const Input = ({ dropzone }: InputProps) => {
     const color = isDragActive ? 'border-blue-500' : 'border-gray-600'
 
     return (
-        <div className={`w-[60%] h-[10rem] rounded-lg border-dashed border-2 transition-all hover:border-gray-500 ${color}`} {...getRootProps()}>
+        <div className={`w-[20rem] h-[10rem] rounded-lg border-dashed border-2 transition-all hover:border-gray-500 ${color}`} {...getRootProps()}>
             <label htmlFor='dropzone-file' className='cursor-pointer w-full h-full'>
                 <Flex align="center" direction="column" className='pt-5 pb-6' gap="3">
                     <UploadIcon
@@ -63,8 +74,9 @@ const Input = ({ dropzone }: InputProps) => {
 }
 
 const HasFile = ({ file, removeFile }: HasFileProps) => {
+    
     return (
-        <div className="w-[60%] h-[10rem] rounded-lg border-dashed border-4 border-gray-600 bg-gray-700 flex justify-center items-center">
+        <div className="w-[20rem] h-[10rem] rounded-lg border-dashed border-2 border-gray-600 bg-gray-700 flex justify-center items-center">
             <div className="bg-white w-36 rounded-md shadow-md flex gap-3 items-center justify-center">
                 <FileIcon className="w-5 h-5 my-4 ml-4" />
                 <span className="text-sm text-gray-500 my-4">{file?.name}</span>
